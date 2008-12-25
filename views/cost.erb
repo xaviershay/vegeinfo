@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+  <head>
+    <title>VegeInfo</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8" />
+  </head>
+  <body>
+<script language="javascript" type="text/javascript" src="javascripts/jquery.js"></script>
+<script language="javascript" type="text/javascript" src="javascripts/jquery.flot.js"></script>
+
+<h1>Cost</h1>
+<div id="cost-graph" style="width:700px;height:300px"></div>
+<div>
+  <p>Source: <a href="http://colesonline.com.au">Coles Online</a></p>
+</div>  
+<%
+  data = [
+    [:vege, "Red lentils", 1.92], # * based on an expansion rate of 2.5 - 1kg of dry lentils > 1kg of any other food here
+    [:vege, "Chick peas", 3.7],
+    [:vege, "Kidney beans", 3.7],
+    [:vege, "Tofu", 12.3], # Blue lotus
+    [:meat, "Free range chicken breast", 17.89], #Lilydale Chicken Breast Fillets Free Range Skin Off"
+    [:meat, "Battery chicken breast", 13.00], # Coles brand
+    [:meat, "Battery beef mince", 9.00], # Coles brand
+    [:meat, "Pork diced", 15.0], # Coles brand
+  ].sort_by {|x| x.last}
+  
+  colors = {
+    :vege => ['#FF8800', '#FFAA00', '#FFD000', '#FFE500'],
+    :meat => ['#ff0000', '#A60C0C', '#780A0A', '#5E0202']
+  }
+  i = 0
+  flot_data = data.inject([]) do |a, (type, label, cost)|
+    i += 1
+    a << {
+      'label' => label,
+      'data'  => [[i - 0.5, cost]],
+      'color' => colors[type].shift
+    }
+  end
+%>
+<style>
+  .barLabel {
+    font-weight: bold;
+    margin-top: -25px;
+    font-size: 14px;
+    color: #545454;
+  }
+
+  tfoot {
+    text-align: center;
+  }
+
+  .xaxislabel {
+    margin-top: 5px;
+  }
+  #cost-graph, .legendLabel, tfoot {
+    font-size: 14px;
+    font-family: georgia;
+    color: #545454;
+  }
+</style>
+<script language="javascript" type="text/javascript">
+var plot = $.plot($("#cost-graph"), <%= flot_data.to_json %>, 
+  { 
+    bars: {
+      fillOpacity: 1.0, 
+      align: 'center', 
+      show: true, 
+      backgroundOpacity: 1.0,
+      labelFormatter: function(datum) { return '$' + datum.y.toFixed(2); }
+      //hoverable: true
+    }, 
+    yaxis: { 
+      min: 0, 
+      max: 20,
+      ticks: [],
+      tickFormatter: function(tick) { return ''; } //return(tick > 0 ? ('$' + tick + '/kg') : '');}
+    }, 
+    xaxis: { 
+      label: 'Costs per kilogram for common staple foods',
+      min: 0, 
+      max: <%= data.size + 3.2 %>, 
+      ticks: []
+    }
+ //   grid: {hoverable: true}
+  });
+
+
+/*
+    $('#cost-graph').bind('plotmousemove', function(e, result) {
+      plot.highlight(result.selected, {
+        lineWidth: 3,
+        fill: false,
+        color: '#000000',
+        backgroundOpacity: 0.0
+      });
+    } );
+*/    
+    
+
+$('#cost-graph .legend table').append('<tfoot><tr><td colspan="2"><p>Prices in <abbr title="Australian Dollars">AUD</abbr> per <abbr title="Kilogram">KG</abbr></p></td></tr></tfoot>')  ;
+</script>
+  </body>
+</html>
+
