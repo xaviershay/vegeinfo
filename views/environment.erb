@@ -1,20 +1,31 @@
 <%
   # Water use per day per household
   data = [
-    ["Direct household use", 360],
     ["Vegetarian diet", (3498 / 2.6).to_i],
     ["Average Australian diet", (11659 / 2.6).to_i]
   ]
-  colors = ['#0000aa', '#00aa00', '#aa0000']
+  colors = ['#00aa00', '#aa0000']
+  flot_data = []
+  flot_data << {
+    'label' => 'Direct household use',
+    'data' => data.collect_with_index {|(_, cost), index| 
+      [index + 0.5, cost + 360]
+    },
+    'color' => '#0000aa'
+  }
   i = 0
-  flot_data = data.inject([]) do |a, (label, cost)|
+  flot_data = data.inject(flot_data) do |a, (label, cost)|
     i += 1
     a << {
       'label' => label,
       'data'  => [[i - 0.5, cost]],
-      'color' => colors.shift
+      'color' => colors.shift,
+      'bars' => {
+        'labelFormatter' => nil
+      }
     }
   end
+  i = 0
 %>
 <h1>Environment</h1>
 <p class="important">A change in diet is the <strong>most effective</strong> way to reduce <strong>water consumption</strong></p>
@@ -38,14 +49,14 @@ var plot = $.plot($("#environment-graph"), <%= flot_data.to_json %>,
     }, 
     yaxis: { 
       min: 0, 
-      max: 5000,
+      max: 5500,
       ticks: [],
       tickFormatter: function(tick) { return ''; }
     }, 
     xaxis: { 
       label: 'Water usage per person per day',
       min: 0, 
-      max: <%= data.size + 3.2 %>, 
+      max: <%= data.size + 2.5 %>, 
       ticks: []
     }
   });
