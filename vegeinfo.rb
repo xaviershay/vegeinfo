@@ -5,3 +5,7 @@ require 'json'
 get '/' do
   erb :cost
 end
+
+get '/environment' do
+  erb :environment
+end

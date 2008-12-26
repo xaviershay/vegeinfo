@@ -1,0 +1,52 @@
+<%
+  # Water use per day per household
+  data = [
+    ["Direct household use", 360],
+    ["Vegetarian diet", (3498 / 2.6).to_i],
+    ["Average Australian diet", (11659 / 2.6).to_i]
+  ]
+  colors = ['#0000aa', '#00aa00', '#aa0000']
+  i = 0
+  flot_data = data.inject([]) do |a, (label, cost)|
+    i += 1
+    a << {
+      'label' => label,
+      'data'  => [[i - 0.5, cost]],
+      'color' => colors.shift
+    }
+  end
+%>
+<h1>Environment</h1>
+<p class="important">A change in diet is the <strong>most effective</strong> way to reduce <strong>water consumption</strong></p>
+<div id="environment-graph" class='graph' style="width:400px;height:300px"></div>
+<h2>Notes</h2>
+<p class="todo">Reference these better</p>
+<ol>
+  <li>Direct household use is from Our Water, Our Future white paper, chapter 5, page 7, from 2004. This figure was estimated to decrease.</li>
+  <li>Dietary figures are from "City people eat rivers: estimating the virtual water consumed by people in a large Australian city" (2007), specifically the data compiled by Amelia Tsang in a comprehensive survey of the available literature and statistics.</li>
+</ol>  
+<script language="javascript" type="text/javascript">
+var plot = $.plot($("#environment-graph"), <%= flot_data.to_json %>, 
+  { 
+    bars: {
+      fillOpacity: 1.0, 
+      align: 'center', 
+      show: true, 
+      backgroundOpacity: 1.0,
+      labelFormatter: function(datum) { return datum.y + 'L'; }
+      //hoverable: true
+    }, 
+    yaxis: { 
+      min: 0, 
+      max: 5000,
+      ticks: [],
+      tickFormatter: function(tick) { return ''; }
+    }, 
+    xaxis: { 
+      label: 'Water usage per person per day',
+      min: 0, 
+      max: <%= data.size + 3.2 %>, 
+      ticks: []
+    }
+  });
+</script>  

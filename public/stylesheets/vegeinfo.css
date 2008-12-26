@@ -1,0 +1,22 @@
+  .barLabel {
+    font-weight: bold;
+    margin-top: -25px;
+    font-size: 14px;
+    color: #545454;
+  }
+
+  tfoot {
+    text-align: center;
+  }
+
+  .xaxislabel {
+    margin-top: 5px;
+  }
+  .graph, .legendLabel, tfoot {
+    font-size: 14px;
+    font-family: georgia;
+    color: #545454;
+  }
+  .todo {
+    color: yellow;
+  }
