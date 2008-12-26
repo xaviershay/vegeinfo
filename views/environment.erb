@@ -58,4 +58,5 @@ var plot = $.plot($("#environment-graph"), <%= flot_data.to_json %>,
       ticks: []
     }
   });
+  $('#environment-graph .legend table').append('<tfoot><tr><td colspan="2"><p>Household use is 360L</p></td></tr></tfoot>')  ;
 </script>  
