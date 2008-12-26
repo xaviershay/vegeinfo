@@ -1,3 +1,13 @@
+body {
+  font-family: georgia, serif;
+  font-size: 14px;
+}
+a {
+  color: #000000;
+}
+a:visited {
+  color: #545454;
+}
   .barLabel {
     font-weight: bold;
     margin-top: -25px;

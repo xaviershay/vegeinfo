@@ -18,6 +18,10 @@ module BonusArrayMethods
 end
 
 get '/' do
+  erb :home
+end
+
+get '/cost' do
   erb :cost
 end
 
