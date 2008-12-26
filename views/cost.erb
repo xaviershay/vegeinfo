@@ -20,17 +20,16 @@
     [:meat, "Battery beef mince", 9.00], # Coles brand
     [:meat, "Pork diced", 15.0], # Coles brand
   ].sort_by {|x| x.last}
+  data.extend(BonusArrayMethods)
   
   colors = {
     :vege => ['#FF8800', '#FFAA00', '#FFD000', '#FFE500'],
     :meat => ['#ff0000', '#A60C0C', '#780A0A', '#5E0202']
   }
-  i = 0
-  flot_data = data.inject([]) do |a, (type, label, cost)|
-    i += 1
+  flot_data = data.inject_with_index([]) do |a, (type, label, cost), i|
     a << {
       'label' => label,
-      'data'  => [[i - 0.5, cost]],
+      'data'  => [[i + 0.5, cost]],
       'color' => colors[type].shift
     }
   end

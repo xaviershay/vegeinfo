@@ -4,6 +4,7 @@
     ["Vegetarian diet", (3498 / 2.6).to_i],
     ["Average Australian diet", (11659 / 2.6).to_i]
   ]
+  data.extend(BonusArrayMethods)
   colors = ['#00aa00', '#aa0000']
   flot_data = []
   flot_data << {
@@ -13,19 +14,16 @@
     },
     'color' => '#0000aa'
   }
-  i = 0
-  flot_data = data.inject(flot_data) do |a, (label, cost)|
-    i += 1
+  flot_data = data.inject_with_index(flot_data) do |a, (label, cost), i|
     a << {
       'label' => label,
-      'data'  => [[i - 0.5, cost]],
+      'data'  => [[i + 0.5, cost]],
       'color' => colors.shift,
       'bars' => {
         'labelFormatter' => nil
       }
     }
   end
-  i = 0
 %>
 <h1>Environment</h1>
 <p class="important">A change in diet is the <strong>most effective</strong> way to reduce <strong>water consumption</strong></p>
