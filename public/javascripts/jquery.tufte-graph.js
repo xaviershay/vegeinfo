@@ -10,10 +10,8 @@
     var ctx = null;
     var plot = {};
 
-    options.data = $(options.data); // Extend to get jQuery array methods
-
     var axis = calculateRange(options);
-    console.log(axis);
+
     constructCanvas();
     draw(target, options);
 
@@ -35,39 +33,36 @@ function draw(target, options) {
         bottom = 0,
         top    = y;
 
-    offset = 0;
-  
     ctx.save();
     ctx.fillStyle = options.color(element, i);
     ctx.beginPath();
-    ctx.moveTo( tHoz( left ), tVert( bottom) + offset );
-    ctx.lineTo( tHoz( left ), tVert( top) + offset );
-    ctx.lineTo( tHoz( right ), tVert( top) + offset );
-    ctx.lineTo( tHoz( right ), tVert( bottom) + offset );
+    ctx.moveTo( tX( left ), tY( bottom) );
+    ctx.lineTo( tX( left ), tY( top) );
+    ctx.lineTo( tX( right ), tY( top) );
+    ctx.lineTo( tX( right ), tY( bottom) );
     ctx.fill();
     ctx.restore();
 
     addLabel('bar-label', options.barLabel(element, i), {
-      left: tHoz(x - 0.5),
-      bottom: plot.height - tVert(top),
-      width: tHoz(1)
+      left: tX(x - 0.5),
+      bottom: plot.height - tY(top),
+      width: tX(1)
     });
     addLabel('axis-label', options.axisLabel(element, i), {
-      left: tHoz(x - 0.5),
-      top: tVert(bottom),
-      width: tHoz(1)
+      left: tX(x - 0.5),
+      top: tY(bottom),
+      width: tX(1)
     });
   }
 }
 
 function addLabel(klass, text, pos) {
-html = '<div style="position:absolute;" class="label ' + klass + '">' +
-         text + "</div>";
-$(html).css(pos).appendTo( target );        
+  html = '<div style="position:absolute;" class="label ' + klass + '">' + text + "</div>";
+  $(html).css(pos).appendTo( target );        
 }
 
-function tHoz( x ) {   return ( x - axis.x.min ) * (plot.width / (axis.x.max - axis.x.min)); }
-function tVert( y ) {  return plot.height - ( y - axis.y.min ) * (plot.height / (axis.y.max - axis.y.min)); }
+function tX( x ) { return               ( x - axis.x.min ) * (plot.width  / (axis.x.max - axis.x.min)); }
+function tY( y ) { return plot.height - ( y - axis.y.min ) * (plot.height / (axis.y.max - axis.y.min)); }
 
 function constructCanvas() {
   plot.width = target.width();
