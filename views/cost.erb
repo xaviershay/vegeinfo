@@ -114,11 +114,15 @@ var canvas = MochiKit.DOM.getElement("cost-graph2");
         //MochiKit.DOM.appendChildNodes(canvas.parentNode, label);
         jQuery('#cost-graph2').parent().append("");
         */
+        colors = {
+          vege: 'rgb(100,125,86)',
+          meat: 'rgb(196,111,14)'
+        }
         $.tufteBar($('#cost-graph'), {
           data: <%= plot_data.to_json %>,
-          barLabel: function(element, index) { return '$' + element[0].toFixed(2) },
+          barLabel:  function(element, index) { return '$' + element[0].toFixed(2) },
           axisLabel: function(element, index) { return element[1].label },
-          color: function(element, index) { return '#476fb2' }
+          color:     function(element, index) { return colors[element[1].type]}
         });
 
 </script>
