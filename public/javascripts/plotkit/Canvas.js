@@ -235,6 +235,9 @@ PlotKit.CanvasRenderer.prototype._renderBarChart = function() {
         var y = this.area.h * bar.y + this.area.y;
         var w = this.area.w * bar.w;
         var h = this.area.h * bar.h;       
+
+        context.fillStyle = this.options.colorSelector(this.options.colorScheme, bar).toRGBString();
+
         if ((w < 1) || (h < 1))
             return;
         if (this.options.shouldFill)

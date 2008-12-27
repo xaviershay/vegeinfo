@@ -43,6 +43,7 @@
   end
   plotkit_data   = data.collect_with_index {|x, i| [i, x.last] }
   plotkit_xticks = data.collect_with_index {|x, i| {'v' => i, 'label' => x[1]} }
+  plotkit_vege_indices = data.collect_with_index {|x, i| x.first == :vege ? i : nil }.compact
 %>
 <style>
 h3 {
@@ -59,6 +60,8 @@ h3 {
 </style>
 
 <script language="javascript" type="text/javascript">
+var vegie_indexs = <%= plotkit_vege_indices.to_json %>;
+
 var options = {
    "IECanvasHTC": "/plotkit/iecanvas.htc",
    "colorScheme": PlotKit.Base.palette(PlotKit.Base.baseColors()[0]),
@@ -69,6 +72,9 @@ var options = {
    "axisLabelFont": 'georgia',
    "axisLabelFontSize": 14,
    "axisLabelWidth": 60,
+   'shouldStroke': false,
+   "colorScheme": [MochiKit.Color.Color.fromString("rgb(100,125,86)"), MochiKit.Color.Color.fromString("rgb(196, 111, 14)")],
+   "colorSelector": function(scheme, obj) { return scheme[vegie_indexs.indexOf(obj.xval) >= 0 ? 0 : 1] },
    "barLabelFormatter": function(value) { return '$' + value.toFixed(2); }
 };
 
