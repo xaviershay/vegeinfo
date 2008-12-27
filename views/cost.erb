@@ -1,5 +1,11 @@
 <h1>Cost</h1>
 <p>On average, plant based foods <strong>cost less</strong> than their fleshy counterparts</p>
+<div class='graph-header'>
+  <h3>Cost of common staple foods</h3>
+  <p>Prices in <abbr title='Australian dollars'>AUD</abbr> per <abbr title='kilogram'>KG</abbr></p>
+</div>
+<div id="cost-graph" class="graph" style="height: 200px; width: 550px;"></div>
+<!--
 <div id='cost-graph-container'>
   <div class='graph-header'>
     <h3>Cost of common staple foods</h3>
@@ -7,6 +13,7 @@
   </div>
   <canvas id="cost-graph2" height="400" width="700"></canvas>
 </div>
+-->
 
 <div>
   <p>Source: <a href="http://colesonline.com.au">Coles Online</a></p>
@@ -41,6 +48,11 @@
       'color' => colors[type].shift
     }
   end
+
+  plot_data = data.collect {|x|
+    [x[2], {'label' => x[1], 'type' => x[0]}]
+  }
+
   plotkit_data   = data.collect_with_index {|x, i| [i, x.last] }
   plotkit_xticks = data.collect_with_index {|x, i| {'v' => i, 'label' => x[1]} }
   plotkit_vege_indices = data.collect_with_index {|x, i| x.first == :vege ? i : nil }.compact
@@ -50,9 +62,8 @@ h3 {
   margin-bottom: 0px;
 }
 .graph-header {
-  position: absolute;
   text-align: center;
-  width: 700px;
+  width: 550px;
 }
 .graph-header p {
   margin-top: 0px;
@@ -60,6 +71,7 @@ h3 {
 </style>
 
 <script language="javascript" type="text/javascript">
+/*
 var vegie_indexs = <%= plotkit_vege_indices.to_json %>;
 
 var options = {
@@ -101,5 +113,25 @@ var canvas = MochiKit.DOM.getElement("cost-graph2");
 
         //MochiKit.DOM.appendChildNodes(canvas.parentNode, label);
         jQuery('#cost-graph2').parent().append("");
+        */
+        $.tufteBar($('#cost-graph'), {
+          data: <%= plot_data.to_json %>,
+          barLabel: function(element, index) { return '$' + element[0].toFixed(2) },
+          axisLabel: function(element, index) { return element[1].label },
+          color: function(element, index) { return '#476fb2' }
+        });
 
 </script>
+<style>
+.graph .label {
+  text-align: center;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.graph {
+  margin-bottom: 50px;
+  margin-top: 20px;
+  clear: both;
+}
+</style>

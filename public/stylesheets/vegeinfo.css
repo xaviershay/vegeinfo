@@ -19,9 +19,6 @@ a:visited {
     text-align: center;
   }
 
-  .xaxislabel {
-    margin-top: 5px;
-  }
   .graph, .legendLabel, tfoot {
     font-size: 14px;
     font-family: georgia;
