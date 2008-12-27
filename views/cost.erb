@@ -1,6 +1,13 @@
 <h1>Cost</h1>
 <p>On average, plant based foods <strong>cost less</strong> than their fleshy counterparts</p>
-<div id="cost-graph" style="width:700px;height:300px"></div>
+<div id='cost-graph-container'>
+  <div class='graph-header'>
+    <h3>Cost of common staple foods</h3>
+    <p>Prices in <abbr title='Australian dollars'>AUD</abbr> per <abbr title='kilogram'>KG</abbr></p>
+  </div>
+  <canvas id="cost-graph2" height="400" width="700"></canvas>
+</div>
+
 <div>
   <p>Source: <a href="http://colesonline.com.au">Coles Online</a></p>
   <h2>Notes</h2>
@@ -16,10 +23,10 @@
     [:vege, "Chick peas", 3.7],
     [:vege, "Kidney beans", 3.7],
     [:vege, "Tofu", 12.3], # Blue lotus
-    [:meat, "Free range chicken", 17.89], #Lilydale Chicken Breast Fillets Free Range Skin Off"
-    [:meat, "Battery chicken", 13.00], # Coles brand
-    [:meat, "Battery beef", 9.00], # Coles brand
-    [:meat, "Pork diced", 15.0], # Coles brand
+    [:meat, "Chicken, free-range", 17.89], #Lilydale Chicken Breast Fillets Free Range Skin Off"
+    [:meat, "Chicken, battery", 13.00], # Coles brand
+    [:meat, "Beef, battery", 9.00], # Coles brand
+    [:meat, "Pork, diced", 15.0], # Coles brand
   ].sort_by {|x| x.last}
   data.extend(BonusArrayMethods)
   
@@ -34,48 +41,59 @@
       'color' => colors[type].shift
     }
   end
+  plotkit_data   = data.collect_with_index {|x, i| [i, x.last] }
+  plotkit_xticks = data.collect_with_index {|x, i| {'v' => i, 'label' => x[1]} }
 %>
 <style>
+h3 {
+  margin-bottom: 0px;
+}
+.graph-header {
+  position: absolute;
+  text-align: center;
+  width: 700px;
+}
+.graph-header p {
+  margin-top: 0px;
+}
 </style>
 
 <script language="javascript" type="text/javascript">
-var plot = $.plot($("#cost-graph"), <%= flot_data.to_json %>, 
-  { 
-    bars: {
-      fillOpacity: 1.0, 
-      align: 'center', 
-      show: true, 
-      backgroundOpacity: 1.0,
-      labelFormatter: function(datum) { return '$' + datum.y.toFixed(2); }
-      //hoverable: true
-    }, 
-    yaxis: { 
-      min: 0, 
-      max: 20,
-      ticks: [],
-      tickFormatter: function(tick) { return ''; } //return(tick > 0 ? ('$' + tick + '/kg') : '');}
-    }, 
-    xaxis: { 
-      label: 'Costs per kilogram for common staple foods',
-      min: 0, 
-      max: <%= data.size + 3.2 %>, 
-      ticks: []
-    }
- //   grid: {hoverable: true}
-  });
+var options = {
+   "IECanvasHTC": "/plotkit/iecanvas.htc",
+   "colorScheme": PlotKit.Base.palette(PlotKit.Base.baseColors()[0]),
+   "padding": {left: 0, right: 0, top: 80, bottom: 35},
+   "xTicks": <%= plotkit_xticks.to_json %>,
+   "drawXTicks": false,
+   "drawYAxis": false,
+   "axisLabelFont": 'georgia',
+   "axisLabelFontSize": 14,
+   "axisLabelWidth": 60,
+   "barLabelFormatter": function(value) { return '$' + value.toFixed(2); }
+};
 
+var layout = new PlotKit.Layout("bar", options);
+layout.addDataset("sqrt", <%= plotkit_data.to_json %>);
+layout.evaluate();
+var canvas = MochiKit.DOM.getElement("cost-graph2");
+ var plotter = new PlotKit.CanvasRenderer(canvas, layout, options);
+ plotter.render();
 
-/*
-    $('#cost-graph').bind('plotmousemove', function(e, result) {
-      plot.highlight(result.selected, {
-        lineWidth: 3,
-        fill: false,
-        color: '#000000',
-        backgroundOpacity: 0.0
-      });
-    } );
-*/    
-    
+        var labelStyle = {"style":
+             {"position": "absolute",
+              "zIndex": 10,
+              "width": "200px",
+              "overflow": "visible"
+             }
+        };
 
-$('#cost-graph .legend table').append('<tfoot><tr><td colspan="2"><p>Prices in <abbr title="Australian Dollars">AUD</abbr> per <abbr title="Kilogram">KG</abbr></p></td></tr></tfoot>')  ;
+        var DIV = MochiKit.DOM.DIV;
+        var label = DIV(labelStyle, "Cost of stable foods\nPrices in AUD per KG");
+        label.style.top = "0px";
+        label.style.left = "0px";
+        label.style.textAlign = "left";
+
+        //MochiKit.DOM.appendChildNodes(canvas.parentNode, label);
+        jQuery('#cost-graph2').parent().append("");
+
 </script>
