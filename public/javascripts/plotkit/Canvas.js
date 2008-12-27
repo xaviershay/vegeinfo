@@ -615,8 +615,8 @@ PlotKit.CanvasRenderer.prototype._renderAxis = function() {
         }
 
         context.beginPath();
-        context.moveTo(this.area.x, this.area.y + this.area.h);
-        context.lineTo(this.area.x + this.area.w, this.area.y + this.area.h);
+        context.moveTo(this.area.x, this.area.y + this.area.h + 1);
+        context.lineTo(this.area.x + this.area.w, this.area.y + this.area.h + 1);
         context.closePath();
         context.stroke();
     }
