@@ -1,4 +1,5 @@
 <h1>Cost</h1>
+<p>On average, plant based foods <strong>cost less</strong> than their fleshy counterparts</p>
 <div id="cost-graph" style="width:700px;height:300px"></div>
 <div>
   <p>Source: <a href="http://colesonline.com.au">Coles Online</a></p>
@@ -15,9 +16,9 @@
     [:vege, "Chick peas", 3.7],
     [:vege, "Kidney beans", 3.7],
     [:vege, "Tofu", 12.3], # Blue lotus
-    [:meat, "Free range chicken breast", 17.89], #Lilydale Chicken Breast Fillets Free Range Skin Off"
-    [:meat, "Battery chicken breast", 13.00], # Coles brand
-    [:meat, "Battery beef mince", 9.00], # Coles brand
+    [:meat, "Free range chicken", 17.89], #Lilydale Chicken Breast Fillets Free Range Skin Off"
+    [:meat, "Battery chicken", 13.00], # Coles brand
+    [:meat, "Battery beef", 9.00], # Coles brand
     [:meat, "Pork diced", 15.0], # Coles brand
   ].sort_by {|x| x.last}
   data.extend(BonusArrayMethods)
@@ -36,6 +37,7 @@
 %>
 <style>
 </style>
+
 <script language="javascript" type="text/javascript">
 var plot = $.plot($("#cost-graph"), <%= flot_data.to_json %>, 
   { 
