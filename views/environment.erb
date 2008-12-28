@@ -5,25 +5,6 @@
     ["Average Australian diet", (11659 / 2.6).to_i]
   ]
   data.extend(BonusArrayMethods)
-  colors = ['#00aa00', '#aa0000']
-  flot_data = []
-  flot_data << {
-    'label' => 'Direct household use',
-    'data' => data.collect_with_index {|(_, cost), index| 
-      [index + 0.5, cost + 360]
-    },
-    'color' => '#0000aa'
-  }
-  flot_data = data.inject_with_index(flot_data) do |a, (label, cost), i|
-    a << {
-      'label' => label,
-      'data'  => [[i + 0.5, cost]],
-      'color' => colors.shift,
-      'bars' => {
-        'labelFormatter' => nil
-      }
-    }
-  end
 %>
 <h1>Environment</h1>
 <p class="important">A change in diet is the <strong>most effective</strong> way to reduce <strong>water consumption</strong></p>
@@ -35,28 +16,4 @@
   <li>Dietary figures are from "City people eat rivers: estimating the virtual water consumed by people in a large Australian city" (2007), specifically the data compiled by Amelia Tsang in a comprehensive survey of the available literature and statistics.</li>
 </ol>  
 <script language="javascript" type="text/javascript">
-var plot = $.plot($("#environment-graph"), <%= flot_data.to_json %>, 
-  { 
-    bars: {
-      fillOpacity: 1.0, 
-      align: 'center', 
-      show: true, 
-      backgroundOpacity: 1.0,
-      labelFormatter: function(datum) { return datum.y + 'L'; }
-      //hoverable: true
-    }, 
-    yaxis: { 
-      min: 0, 
-      max: 5500,
-      ticks: [],
-      tickFormatter: function(tick) { return ''; }
-    }, 
-    xaxis: { 
-      label: 'Water usage per person per day',
-      min: 0, 
-      max: <%= data.size + 2.5 %>, 
-      ticks: []
-    }
-  });
-  $('#environment-graph .legend table').append('<tfoot><tr><td colspan="2"><p>Household use is 360L</p></td></tr></tfoot>')  ;
 </script>  

@@ -5,15 +5,6 @@
   <p>Prices in <abbr title='Australian dollars'>AUD</abbr> per <abbr title='kilogram'>KG</abbr></p>
 </div>
 <div id="cost-graph" class="graph" style="height: 200px; width: 550px;"></div>
-<!--
-<div id='cost-graph-container'>
-  <div class='graph-header'>
-    <h3>Cost of common staple foods</h3>
-    <p>Prices in <abbr title='Australian dollars'>AUD</abbr> per <abbr title='kilogram'>KG</abbr></p>
-  </div>
-  <canvas id="cost-graph2" height="400" width="700"></canvas>
-</div>
--->
 
 <div>
   <p>Source: <a href="http://colesonline.com.au">Coles Online</a></p>
@@ -36,26 +27,10 @@
     [:meat, "Pork, diced", 15.0], # Coles brand
   ].sort_by {|x| x.last}
   data.extend(BonusArrayMethods)
-  
-  colors = {
-    :vege => ['#FF8800', '#FFAA00', '#FFD000', '#FFE500'],
-    :meat => ['#ff0000', '#A60C0C', '#780A0A', '#5E0202']
-  }
-  flot_data = data.inject_with_index([]) do |a, (type, label, cost), i|
-    a << {
-      'label' => label,
-      'data'  => [[i + 0.5, cost]],
-      'color' => colors[type].shift
-    }
-  end
 
   plot_data = data.collect {|x|
     [x[2], {'label' => x[1], 'type' => x[0]}]
   }
-
-  plotkit_data   = data.collect_with_index {|x, i| [i, x.last] }
-  plotkit_xticks = data.collect_with_index {|x, i| {'v' => i, 'label' => x[1]} }
-  plotkit_vege_indices = data.collect_with_index {|x, i| x.first == :vege ? i : nil }.compact
 %>
 <style>
 h3 {
@@ -71,71 +46,14 @@ h3 {
 </style>
 
 <script language="javascript" type="text/javascript">
-/*
-var vegie_indexs = <%= plotkit_vege_indices.to_json %>;
-
-var options = {
-   "IECanvasHTC": "/plotkit/iecanvas.htc",
-   "colorScheme": PlotKit.Base.palette(PlotKit.Base.baseColors()[0]),
-   "padding": {left: 0, right: 0, top: 80, bottom: 35},
-   "xTicks": <%= plotkit_xticks.to_json %>,
-   "drawXTicks": false,
-   "drawYAxis": false,
-   "axisLabelFont": 'georgia',
-   "axisLabelFontSize": 14,
-   "axisLabelWidth": 60,
-   'shouldStroke': false,
-   "colorScheme": [MochiKit.Color.Color.fromString("rgb(100,125,86)"), MochiKit.Color.Color.fromString("rgb(196, 111, 14)")],
-   "colorSelector": function(scheme, obj) { return scheme[vegie_indexs.indexOf(obj.xval) >= 0 ? 0 : 1] },
-   "barLabelFormatter": function(value) { return '$' + value.toFixed(2); }
-};
-
-var layout = new PlotKit.Layout("bar", options);
-layout.addDataset("sqrt", <%= plotkit_data.to_json %>);
-layout.evaluate();
-var canvas = MochiKit.DOM.getElement("cost-graph2");
- var plotter = new PlotKit.CanvasRenderer(canvas, layout, options);
- plotter.render();
-
-        var labelStyle = {"style":
-             {"position": "absolute",
-              "zIndex": 10,
-              "width": "200px",
-              "overflow": "visible"
-             }
-        };
-
-        var DIV = MochiKit.DOM.DIV;
-        var label = DIV(labelStyle, "Cost of stable foods\nPrices in AUD per KG");
-        label.style.top = "0px";
-        label.style.left = "0px";
-        label.style.textAlign = "left";
-
-        //MochiKit.DOM.appendChildNodes(canvas.parentNode, label);
-        jQuery('#cost-graph2').parent().append("");
-        */
-        colors = {
-          vege: 'rgb(100,125,86)',
-          meat: 'rgb(196,111,14)'
-        }
-        $.tufteBar($('#cost-graph'), {
-          data: <%= plot_data.to_json %>,
-          barLabel:  function(element, index) { return '$' + element[0].toFixed(2) },
-          axisLabel: function(element, index) { return element[1].label },
-          color:     function(element, index) { return colors[element[1].type]}
-        });
-
+  colors = {
+    vege: 'rgb(100,125,86)',
+    meat: 'rgb(196,111,14)'
+  }
+  $.tufteBar($('#cost-graph'), {
+    data: <%= plot_data.to_json %>,
+    barLabel:  function(element, index) { return '$' + element[0].toFixed(2) },
+    axisLabel: function(element, index) { return element[1].label },
+    color:     function(element, index) { return colors[element[1].type]}
+  });
 </script>
-<style>
-.graph .label {
-  text-align: center;
-  padding-top: 5px;
-  padding-bottom: 5px;
-}
-
-.graph {
-  margin-bottom: 50px;
-  margin-top: 20px;
-  clear: both;
-}
-</style>
