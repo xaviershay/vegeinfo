@@ -28,3 +28,7 @@ end
 get '/environment' do
   erb :environment
 end
+
+get '/health' do
+  erb :health
+end

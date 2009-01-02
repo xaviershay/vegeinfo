@@ -1,4 +1,70 @@
-Vegetarians have 24% lower mortality rate from heart disease, in a study of over 75,000 people - http://www.ajcn.org/cgi/content/full/70/3/516S
+<script type='text/javascript'>
+  colors = {
+    vegetarian: 'rgb(100,125,86)',
+    omnivore: 'rgb(196,111,14)'
+  }
+  $(function() {
+    (function(table) {
+      $("#mortality-rate-ihd-graph").tufteBar({
+        data: table.find('tbody tr').collect(function() {
+          column = function(e, n) { return $(e).find('td:nth-child(' + n + ')').html(); };
+          value = column(this, 2);
+          footnote = '';
+          if ((index = value.indexOf('<')) >= 0) {
+            footnote = value.slice(index, value.length);
+            value = value.slice(0, index)
+          }
+            
+          return [value * 1, {label: column(this, 1), type: column(this, 3).toLowerCase(), footnote: footnote}];
+        }),
+        barLabel:  function(index) { return this[0] + this[1].footnote },
+        axisLabel: function(index) { return this[1].label },
+        color:     function(index) { return colors[this[1].type]}
+      });
+      table.hide();
+    })($('#mortality-rate-ihd'));
+  });
+</script>
+<style>
+  .graph-header { width: 450px; }
+</style>
+<h1>Health</h1>
 
-There is a high correlation between of meat and cancer - http://www.vegsource.com/harris/cancer_vegdiet.htm
-(this contradicts above study?)
+<div class='graph-header'>
+  <h3>Ratios of deaths from heart disease</h3>
+  <p>From a survey of 66,294 people<sup>1</sup></p>
+</div>
+<div id='mortality-rate-ihd-graph' class='graph' style='width:450px;height:250px'></div>
+<table id="mortality-rate-ihd">
+  <thead>
+    <tr>
+      <th>Diet</th>
+      <th>Death Rate Ratio</th>
+      <th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Regular Meat Eaters</td>               <td>1.00</td><td>Omnivore</td></tr>
+    <tr><td>Occasional Meat Eaters<sup>2</sup></td><td>0.80</td><td>Omnivore</td></tr>
+    <tr><td>Fish Eaters</td>                       <td>0.66</td><td>Omnivore</td></tr>
+    <tr><td>Vegetarian</td>                        <td>0.66</td><td>Vegetarian</td></tr>
+    <tr><td>Vegan</td>                             <td>0.74<sup>3</sup></td><td>Vegetarian</td></tr>
+  </tbody>
+</table>
+<h2>Notes</h2>
+<ol>
+  <li>Compiled data from 4 other studies, adjusted for confounding factors (gender, education, alcohol, etc&hellip;)</li>
+  <li>People who eat meat once or less per week</li>
+  <li>Due to the small number of deaths in the vegan group (17), this value has a large 95% confidence interval (0.46 - 1.21)</li>
+</ol>  
+<h2>Source</h2>
+<p>Table 7 in Key, Timothy J, et al., 1999 "Mortality in vegetarians and nonvegetarians: detailed findings from a collaborative analysis of 5 prospective studies" American Journal of Clinical Nutrition, Vol. 70, No. 3, 516S-524S, September 1999. <a href="http://www.ajcn.org/cgi/content/full/70/3/516S">Available online [PDF]</a>.</p>
+
+<h2>Random other Notes</h2>
+<ul>
+  <li> There is a high correlation between of meat and cancer - http://www.vegsource.com/harris/cancer_vegdiet.htm
+(this contradicts above study?)</li>
+  <li>Animal sources of protein are not required to provide a complete amino acid profile http://www.ajcn.org/cgi/reprint/59/5/1203S.pdf - 
+"As a result, all of the indispensable amino acids, including the sulfur amino acids, in soy proteins and lysine in cereal proteins are predicted to be in considerable excess of adult needs." - p3
+</li>
+</ul>
