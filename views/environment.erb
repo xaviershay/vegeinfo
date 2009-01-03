@@ -7,9 +7,24 @@
   plot_data = data.collect {|x|
     [[x[1], 360], x[0]]
   }
+  
+  amelia_crop_data = [
+    ["Rice", 2521, "Vegan"],
+    ["Beef", 35863, "Omnivore"],
+    ["Pork", 5469, "Omnivore"],
+    ["Poultry", 2626, "Omnivore"],
+    ["Cheese", 5288, "Vegetarian"],
+    ["Milk", 724, "Vegetarian"],
+    ["Potatoes", 133, "Vegan"],
+    ["Wheat", 1080, "Vegan"],
+    ["Soybeans", (480.05 * 2.205).to_i, "Vegan"],
+    ["Tofu", (219 * 2.205).to_i, "Vegan"],
+    ["Apples", 419, "Vegan"]
+  ].sort_by {|x| x[1] }
 %>
 <style>
   .graph-header { width: 400px; }
+  .crop-water-usage { width: 700px; }
   .graph .legend { margin-left: -180px; margin-top: 70px; }
 </style>
 <h1>Environment</h1>
@@ -24,16 +39,71 @@
   <li>Direct, household is usage as measured by your water meter (showers, laundry, etc&hellip;). The value used here is 360L, from Our Water, Our Future white paper, chapter 5, page 7, from 2004. This figure was estimated to decrease.</li>
   <li>Indirect, food figures are from "City people eat rivers: estimating the virtual water consumed by people in a large Australian city" (2007), specifically the data compiled by Amelia Tsang in a comprehensive survey of the available literature and statistics.</li>
 </ol>  
+<div class='graph-header crop-water-usage'>
+  <h3>Water in food production</h3>
+  <p>Litres of water required for one kilogram of industry farmed produce</p>
+</div>  
+<div id='crop-water-usage-graph' class='graph' style='width:700px;height:350px'></div>
+<table id='crop-water-usage'>
+  <thead>
+    <tr>
+      <th>Food</th>
+      <th>L/KG</th>
+    </tr>  
+  </thead>
+  <tbody>
+    <% amelia_crop_data.each do |food| %>
+    <tr>
+      <td><%= food[0] %></td>
+      <td><%= food[1] %></td>
+      <td><%= food[2] %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+<h2>Notes</h2>
+<ol>
+  <li>Includes water required for the entire life cycle of the produce.</li>
+  <li>All figures are from the data compiled by Amelia Tsang in a comprehensive survey of the available literature and statistics, except for soy beans and tofu which are from Kreith, M. and Davis, C.A. (1991) "Water Inputs in California Food Production" Water Education Foundation, Sacramento CA 95814. </li>
+</ol>  
 <script language="javascript" type="text/javascript">
-  $('#environment-graph').tufteBar({
-    data: <%= plot_data.to_json %>,
-    axisLabel: function() { return this[1] },
-    barLabel:  function() { return $(this[0]).sum() + 'L' },
-    legend: {
-      data: [
-        'Indirect, food',
-        'Direct, household'
-      ]
+  $(function() {
+    colors = {
+      vegan: 'rgb(100,125,86)',
+      vegetarian: 'rgb(205,212,167)',
+      omnivore: 'rgb(196,111,14)'
     }
-  })
+
+    $('#environment-graph').tufteBar({
+      data: <%= plot_data.to_json %>,
+      axisLabel: function() { return this[1] },
+      barLabel:  function() { return $.tufteBar.formatNumber($(this[0]).sum()) + 'L' },
+      legend: {
+        data: [
+          'Indirect, food',
+          'Direct, household'
+        ]
+      }
+    });
+
+    (function(table) {
+      $("#crop-water-usage-graph").tufteBar({
+        data: table.find('tbody tr').collect(function() {
+          column = function(e, n) { return $(e).find('td:nth-child(' + n + ')').html(); };
+          value = column(this, 2);
+          footnote = '';
+          if ((index = value.indexOf('<')) >= 0) {
+            footnote = value.slice(index, value.length);
+            value = value.slice(0, index)
+          }
+            
+          return [value * 1, {label: column(this, 1), type: column(this, 3).toLowerCase(), footnote: footnote}];
+        }),
+        barLabel:  function(index) { return $.tufteBar.formatNumber(this[0]) + this[1].footnote + 'L' },
+        axisLabel: function(index) { return this[1].label },
+        color:     function(index) { return colors[this[1].type]}
+      });
+      table.hide();
+    })($('#crop-water-usage'));
+  });  
 </script>  
