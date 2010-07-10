@@ -25,5 +25,8 @@ a:visited {
     color: #545454;
   }
   .todo {
-    color: yellow;
+    color: #FFCC00;
+  }
+  .warning {
+    color: #CC0000;
   }
